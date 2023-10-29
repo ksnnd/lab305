@@ -62,8 +62,12 @@ class POP3Server(BaseRequestHandler):
             elif data == 'STAT':
                 print(12)
                 self.handle_stat(conn)
+            elif data.startswith('LIST ') and data.split()[1].isdigit():
+                self.handle_list1(data, conn)
             elif data == 'LIST':
                 self.handle_list(conn)
+            # elif data.startswith('LIST ') and data.split()[1].isdigit():
+            #     self.handle_list1(data, conn)
             elif data.startswith('RETR ') and data.split()[1].isdigit():
                 print(13)
                 self.handle_retr(data, conn)
@@ -118,6 +122,21 @@ class POP3Server(BaseRequestHandler):
                     response += b'%d %d\r\n' % (i, len(email))
             response += b'.\r\n'
             conn.sendall(response)
+
+    def handle_list1(self, command,conn):
+        if not self.authenticated:
+            conn.sendall(b'-ERR User not authenticated\r\n')
+        else:
+            email_index = int(command.split()[1])
+            if email_index in self.deleted_emails:
+                conn.sendall(b'-ERR Email has been marked as deleted\r\n')
+            elif 1 <= email_index <= len(MAILBOXES[self.user]):
+                email = MAILBOXES[self.user][email_index - 1]
+                response = b'%d %d\r\n.\r\n' % (email_index, len(email))
+                conn.sendall(response)
+            else:
+                conn.sendall(b'-ERR \r\n')
+
 
     def handle_retr(self, command, conn):
         if not self.authenticated:
@@ -181,19 +200,16 @@ class SMTPServer(BaseRequestHandler):
             if command.startswith('helo') or command.startswith('ehlo'):
                 # Handle HELO command
                 conn.sendall(b'250 \r\n')
-                print('helo\r\n')
 
             elif command.startswith('mail'):
                 # Handle MAIL command
                 sender = command.split(':')[1].strip()[1:-1]
                 conn.sendall(b'250 OK\r\n')
-                print('mail\r\n')
             elif command.startswith('rcpt'):
                 # Handle RCPT command
                 receiver = command.split(':')[1].strip()[1:-1]
                 receivers.append(receiver)
                 conn.sendall(b'250 OK\r\n')
-                print('rcpt\r\n')
 
             elif command == 'data':
                 # Handle DATA command
@@ -202,12 +218,10 @@ class SMTPServer(BaseRequestHandler):
                 while not data.endswith(b'\r\n.\r\n'):
                     data += conn.recv(1024)
                 conn.sendall(b'250 OK\r\n')
-                print('data\r\n')
 
             elif command == 'quit':
                 # Handle QUIT command
                 conn.sendall(b'221 Bye\r\n')
-                print('quit\r\n')
                 break
 
         # Store the email in the correct mailbox or forward it to the recipient's server
@@ -215,7 +229,12 @@ class SMTPServer(BaseRequestHandler):
             receiver_domain = receiver.split('@')[1]
             print(receiver_domain)
             print(args.name)
-            if receiver_domain == args.name :
+            tmp = None
+            if args.name == 'exmail.qq.com':
+                tmp = 'mail.sustech.edu.cn'
+            else:
+                tmp = args.name
+            if receiver_domain == tmp :
                 MAILBOXES[receiver].append(data)
                 print('sdfsdfsdf')
             else:
