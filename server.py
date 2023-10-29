@@ -120,34 +120,44 @@ class POP3Server(BaseRequestHandler):
             conn.sendall(response)
 
     def handle_retr(self, command, conn):
-
-        email_index = int(command.split()[1])
-        if email_index in self.deleted_emails:
-            conn.sendall(b'-ERR Email has been marked as deleted\r\n')
-        elif 1 <= email_index <= len(MAILBOXES[self.user]):
-            email = MAILBOXES[self.user][email_index - 1]
-            print(email)
-            conn.sendall(b'+OK %d %s' % (len(email), email))
+        if not self.authenticated:
+            conn.sendall(b'-ERR User not authenticated\r\n')
         else:
-            conn.sendall(b'-ERR \r\n')
+            email_index = int(command.split()[1])
+            if email_index in self.deleted_emails:
+                conn.sendall(b'-ERR Email has been marked as deleted\r\n')
+            elif 1 <= email_index <= len(MAILBOXES[self.user]):
+                email = MAILBOXES[self.user][email_index - 1]
+                print(email)
+                conn.sendall(b'+OK %d %s' % (len(email), email))
+            else:
+                conn.sendall(b'-ERR \r\n')
 
     def handle_dele(self, command, conn):
-
-
-        email_index = int(command.split()[1])
-        print( email_index)
-        if email_index in self.deleted_emails or email_index <= 0 or email_index > len(MAILBOXES[self.user]):
-            conn.sendall(b'-ERR \r\n')
+        if not self.authenticated:
+            conn.sendall(b'-ERR User not authenticated\r\n')
         else:
-            self.deleted_emails.add(email_index)
-            conn.sendall(b'+OK \r\n')
+
+            email_index = int(command.split()[1])
+            print( email_index)
+            if email_index in self.deleted_emails or email_index <= 0 or email_index > len(MAILBOXES[self.user]):
+                conn.sendall(b'-ERR \r\n')
+            else:
+                self.deleted_emails.add(email_index)
+                conn.sendall(b'+OK \r\n')
 
     def handle_rset(self, conn):
-        self.deleted_emails.clear()
-        conn.sendall(b'+OK reset\r\n')
+        if not self.authenticated:
+            conn.sendall(b'-ERR User not authenticated\r\n')
+        else:
+            self.deleted_emails.clear()
+            conn.sendall(b'+OK reset\r\n')
 
     def handle_noop(self, conn):
-        conn.sendall(b'+OK\r\n')
+        if not self.authenticated:
+            conn.sendall(b'-ERR User not authenticated\r\n')
+        else:
+            conn.sendall(b'+OK\r\n')
 
     def handle_quit(self, conn):
         if not self.authenticated:
