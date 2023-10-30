@@ -26,7 +26,8 @@ with open('data/config.toml', 'rb') as f:
     POP_PORT = args.pop or int(_config['server'][args.name]['pop'])
     ACCOUNTS = _config['accounts'][args.name]
     MAILBOXES = {account: [] for account in ACCOUNTS.keys()}
-
+    A1 = _config['accounts']['exmail.qq.com']
+    A2 = _config['accounts']['gmail.com']
 with open('data/fdns.toml', 'rb') as f:
     FDNS = tomli.load(f)
 
@@ -66,8 +67,7 @@ class POP3Server(BaseRequestHandler):
                 self.handle_list1(data, conn)
             elif data == 'LIST':
                 self.handle_list(conn)
-            # elif data.startswith('LIST ') and data.split()[1].isdigit():
-            #     self.handle_list1(data, conn)
+
             elif data.startswith('RETR ') and data.split()[1].isdigit():
                 print(13)
                 self.handle_retr(data, conn)
@@ -226,6 +226,9 @@ class SMTPServer(BaseRequestHandler):
 
         # Store the email in the correct mailbox or forward it to the recipient's server
         for receiver in receivers:
+            if receiver not in A1 and receiver not in A2:
+                print('sdssssss')
+                continue
             receiver_domain = receiver.split('@')[1]
             print(receiver_domain)
             print(args.name)
@@ -234,7 +237,7 @@ class SMTPServer(BaseRequestHandler):
                 tmp = 'mail.sustech.edu.cn'
             else:
                 tmp = args.name
-            if receiver_domain == tmp :
+            if receiver_domain == tmp:
                 MAILBOXES[receiver].append(data)
                 print('sdfsdfsdf')
             else:
