@@ -72,3 +72,34 @@
 | 方向            | yaw（绕Y轴旋转）            | yaw + pitch + roll（绕Y/X/Z轴旋转） |
 | 适用场景     | 平坦地面（如城市道路）          | 复杂地形（如斜坡、颠簸路面） roads) |
 
+
+| mAP | nuScenes  |
+| :--- | :--- |
+| car | 0.557 |
+| truck | 0.360 |
+| bus | 0.434 |
+| trailer | 0.227 |
+| construction_vehicle| 0.094 |
+| pedestrian | 0.453 |
+| motorcycle| 0.368 |
+| bicycle| 0.341 |
+| traffic_cone | 0.531 |
+| barrier| 0.472 |
+| final| 0.384 |
+
+
+| mAP | Suscape  |
+| :--- | :--- |
+| Car | 0.539 |
+| Truck | 0.351 |
+| Bus | 0.416 |
+| ScooterRider | 0.203 |
+| Scooter | 0.224 |
+| Pedestrian | 0.447 |
+| Bicycle| 0.228 |
+| BicycleRider| 0.216 |
+| Trimotorcycle | 0.271 |
+| Van| 0.397 |
+| final| 0.337 |
+
+
