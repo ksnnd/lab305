@@ -65,10 +65,10 @@
 
 
 
-| Parameter               | nuScenes (7DoF)                          | Suscape (9DoF)                                  |
+| 参数              | nuScenes (7DoF)                          | Suscape (9DoF)                                  |
 |--------------------------|------------------------------------------|------------------------------------------------|
-| Position                | (x, y, z)                                | (x, y, z)                                      |
-| Size                    | (Length, Width, Height)                 | (Length, Width, Height)                      |
-| Orientation             | yaw (Rotation around Y-axis)             | yaw + pitch + roll (Rotations around Y/X/Z-axes) |
-| Applicable Scenario     | Flat ground (e.g., urban roads)          |是 Complex terrains (e.g., slopes, uneven roads) |
+| 位置                | (x, y, z)                                | (x, y, z)                                      |
+| 尺寸                    | (长, 宽, 高)                | (长, 宽, 高)                      |
+| 方向            | yaw（绕Y轴旋转）            | yaw + pitch + roll（绕Y/X/Z轴旋转） |
+| 适用场景     | 平坦地面（如城市道路）          | 复杂地形（如斜坡、颠簸路面） roads) |
 
