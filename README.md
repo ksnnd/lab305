@@ -70,5 +70,5 @@
 | Position                | (x, y, z)                                | (x, y, z)                                      |
 | Size                    | (Length, Width, Height)                 | (Length, Width, Height)                      |
 | Orientation             | yaw (Rotation around Y-axis)             | yaw + pitch + roll (Rotations around Y/X/Z-axes) |
-| Applicable Scenario     | Flat ground (e.g., urban roads)          | Complex terrains (e.g., slopes, uneven roads) |
+| Applicable Scenario     | Flat ground (e.g., urban roads)          |是 Complex terrains (e.g., slopes, uneven roads) |
 
